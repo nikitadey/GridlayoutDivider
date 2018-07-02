@@ -18,21 +18,21 @@ import android.view.View;
  */
 public class GridDividerDecoration extends RecyclerView.ItemDecoration {
 
-    private static final int[] ATTRS = { android.R.attr.listDivider };
+    private static final int[] ATTRS = {android.R.attr.listDivider};
 
-    private Drawable mDividerHorizontalLeft,mDividerHorizontalRight, mDividerVerticalTop,mDividerVerticalBottom,mdividerNormal;
+    private Drawable mDividerHorizontalLeft, mDividerHorizontalRight, mDividerVerticalTop, mDividerVerticalBottom, mdividerNormal;
     private int mInsets;
     private int spanCount;
 
-    public GridDividerDecoration(Context context,int spanCount,int drawableHorizontalLeft,int drawableHorizontalRight,int drawableVerticalTop,int drawableVerticalBottom,int normalDrawable) {
+    public GridDividerDecoration(Context context, int spanCount, int drawableHorizontalLeft, int drawableHorizontalRight, int drawableVerticalTop, int drawableVerticalBottom, int normalDrawable) {
         TypedArray a = context.obtainStyledAttributes(ATTRS);
 //        mDividerHorizontalLeft = a.getDrawable(0);
-        this.spanCount=spanCount;
-        mDividerHorizontalLeft = ContextCompat.getDrawable(context,drawableHorizontalLeft);
-        mDividerHorizontalRight= ContextCompat.getDrawable(context,drawableHorizontalRight);
-        mDividerVerticalTop =ContextCompat.getDrawable(context,drawableVerticalTop);
-        mDividerVerticalBottom=ContextCompat.getDrawable(context,drawableVerticalBottom);
-        mdividerNormal=ContextCompat.getDrawable(context,normalDrawable);
+        this.spanCount = spanCount;
+        mDividerHorizontalLeft = ContextCompat.getDrawable(context, drawableHorizontalLeft);
+        mDividerHorizontalRight = ContextCompat.getDrawable(context, drawableHorizontalRight);
+        mDividerVerticalTop = ContextCompat.getDrawable(context, drawableVerticalTop);
+        mDividerVerticalBottom = ContextCompat.getDrawable(context, drawableVerticalBottom);
+        mdividerNormal = ContextCompat.getDrawable(context, normalDrawable);
 
         a.recycle();
 
@@ -45,45 +45,50 @@ public class GridDividerDecoration extends RecyclerView.ItemDecoration {
         drawHorizontal(c, parent);
     }
 
-    /** Draw dividers at each expected grid interval */
+    /**
+     * Draw dividers at each expected grid interval
+     */
     public void drawHorizontal(Canvas c, RecyclerView parent) {
         if (parent.getChildCount() == 0) return;
 
         final int childCount = parent.getChildCount();
 
         for (int i = 0; i < childCount; i++) {
-            final View child = parent.getChildAt(i);
-            final RecyclerView.LayoutParams params =
-                    (RecyclerView.LayoutParams) child.getLayoutParams();
+            if (i < childCount - spanCount) {
 
-            final int left = child.getLeft() - params.leftMargin - mInsets;
-            final int right = child.getRight() + params.rightMargin + mInsets;
-            final int top = child.getBottom() + params.bottomMargin + mInsets;
+                final View child = parent.getChildAt(i);
+                final RecyclerView.LayoutParams params =
+                        (RecyclerView.LayoutParams) child.getLayoutParams();
+
+                final int left = child.getLeft() - params.leftMargin - mInsets;
+                final int right = child.getRight() + params.rightMargin + mInsets;
+                final int top = child.getBottom() + params.bottomMargin + mInsets;
 
 
-            if(i>0 &&i%spanCount>0&&i%spanCount<spanCount-1){
-                final int bottom = top + mdividerNormal.getIntrinsicHeight();
-                mdividerNormal.setBounds(left, top, right, bottom);
-                mdividerNormal.draw(c);
+                if (i > 0 && i % spanCount > 0 && i % spanCount < spanCount - 1) {
+                    final int bottom = top + mdividerNormal.getIntrinsicHeight();
+                    mdividerNormal.setBounds(left, top, right, bottom);
+                    mdividerNormal.draw(c);
 
-            }
-            else if(i>0&& i%spanCount==spanCount-1){
+                } else if (i > 0 && i % spanCount == spanCount - 1) {
 
-                final int bottom = top + mDividerHorizontalRight.getIntrinsicHeight();
-                mDividerHorizontalRight.setBounds(left, top, right, bottom);
-                mDividerHorizontalRight.draw(c);
-            }
-            else {
+                    final int bottom = top + mDividerHorizontalRight.getIntrinsicHeight();
+                    mDividerHorizontalRight.setBounds(left, top, right, bottom);
+                    mDividerHorizontalRight.draw(c);
+                } else {
 
-                final int bottom = top + mDividerHorizontalLeft.getIntrinsicHeight();
-                mDividerHorizontalLeft.setBounds(left, top, right, bottom);
-                mDividerHorizontalLeft.draw(c);
+                    final int bottom = top + mDividerHorizontalLeft.getIntrinsicHeight();
+                    mDividerHorizontalLeft.setBounds(left, top, right, bottom);
+                    mDividerHorizontalLeft.draw(c);
+                }
             }
 
         }
     }
 
-    /** Draw dividers to the right of each child view */
+    /**
+     * Draw dividers to the right of each child view
+     */
     public void drawVertical(Canvas c, RecyclerView parent) {
         final int childCount = parent.getChildCount();
 
@@ -97,18 +102,16 @@ public class GridDividerDecoration extends RecyclerView.ItemDecoration {
             final int top = child.getTop() - params.topMargin - mInsets;
             final int bottom = child.getBottom() + params.bottomMargin + mInsets;
 
-            if(i<spanCount){
+            if (i < spanCount) {
                 final int right = left + mDividerVerticalTop.getIntrinsicWidth();
                 mDividerVerticalTop.setBounds(left, top, right, bottom);
                 mDividerVerticalTop.draw(c);
-            }
-            else if(i>=childCount-spanCount  &&( (i% spanCount<=childCount%spanCount && childCount%spanCount!=0) || (i% spanCount>=childCount%spanCount && childCount%spanCount==0))){
+            } else if (i >= childCount - spanCount && ((i % spanCount <= childCount % spanCount && childCount % spanCount != 0) || (i % spanCount >= childCount % spanCount && childCount % spanCount == 0))) {
 
                 final int right = left + mDividerVerticalBottom.getIntrinsicWidth();
                 mDividerVerticalBottom.setBounds(left, top, right, bottom);
                 mDividerVerticalBottom.draw(c);
-            }
-            else{
+            } else {
                 final int right = left + mdividerNormal.getIntrinsicWidth();
                 mdividerNormal.setBounds(left, top, right, bottom);
                 mdividerNormal.draw(c);
